@@ -171,61 +171,67 @@ links = []
 descs = []
 stars = []
 
+//li[contains(@class,"col-12")]
+//li[contains(@class,"col-12")][1]//a[contains(@href,'stargazers')]
+
 for i in repo_elements:
+    print (i.attribute("class"))
+    
     
 # Get repo titles
-    titles_list = i.find_elements(By.XPATH, "//a[@itemprop='name codeRepository']")
-    for x in titles_list:
-        try:
-            titles_element = x.text
-        except:
-            titles_element = ''
-        titles.append(titles_element)
+    # titles_list = i.find_elements(By.XPATH, "//a[@itemprop='name codeRepository']")
+    # for x in titles_list:
+    #     try:
+    #         titles_element = x.text
+    #     except:
+    #         titles_element = 'NA'
+    #     titles.append(titles_element)
 
 # Get repo languages
-    languages_list = i.find_elements(By.XPATH, "//span[@itemprop='programmingLanguage']")
-    for x in languages_list:
-        try:
-            languages_element = x.text
-        except:
-            languages_element = ''
-        languages.append(languages_element)
+    # languages_list = i.find_elements(By.XPATH, "//span[@itemprop='programmingLanguage']")
+    # for x in languages_list:
+    #     try:
+    #         languages_element = x.text
+    #     except:
+    #         languages_element = ''
+    #     languages.append(languages_element)
 
 # Get repo links
-    links_list = i.find_elements(By.XPATH, "//h3[@class='wb-break-all']/a")
-    for x in links_list:
-        try:
-            links_element = x.get_attribute("href")
-        except:
-            links_element = ''
-        links.append(links_element)
+    # links_list = i.find_elements(By.XPATH, "//h3[@class='wb-break-all']/a")
+    # for x in links_list:
+    #     try:
+    #         links_element = x.get_attribute("href")
+    #     except:
+    #         links_element = ''
+    #     links.append(links_element)
 
 # Get repo descriptions
-    descs_list = i.find_elements(By.XPATH, "//p[@itemprop='description']")
-    for x in descs_list:
-        try:
-            descs_element = x.text
-        except:
-            descs_element = ''
-        descs.append(descs_element)
+#     descs_list = i.find_elements(By.XPATH, "//p[@itemprop='description']")
+#     for x in descs_list:
+#         try:
+#             descs_element = x.text
+#         except:
+#             descs_element = ''
+#         descs.append(descs_element)
 
 # Get repo stars
-    stars_list = i.find_elements(By.XPATH, "//a[contains(@href,'stargazers')]")
-    for x in stars_list:
-        try:
-            stars_element = x.text
-        except:
-            stars_element = ''
-        stars.append(stars_element)
+    # stars_list = i.find_elements(By.XPATH, "//a[contains(@href,'stargazers')]")
+    # for x in stars_list:
+    #     try:
+    #         stars_element = x.text
+    #         print(stars_element)
+    #     except:
+    #         stars_element = ''
+    #     stars.append(stars_element)
     
 # print response in terminal
-print('TITLES:')
-print(titles, '\n')
-print("LANGUAGES:")
-print(languages, '\n')
-print("LINKS:")
-print(links, '\n')
-print("DESCRIPTIONS:")
-print(descs, '\n')
-print("STARS:")
-print(stars, '\n')
+# print('TITLES:')
+# print(titles, '\n')
+# print("LANGUAGES:")
+# print(languages, '\n')
+# print("LINKS:")
+# print(links, '\n')
+# print("DESCRIPTIONS:")
+# print(descs, '\n')
+# print("STARS:")
+# print(stars, '\n')
