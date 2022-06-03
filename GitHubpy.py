@@ -6,6 +6,7 @@ Created on Thu Jun  2 10:51:03 2022
 """
 
 import time
+from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,7 +18,8 @@ from selenium.common.exceptions import TimeoutException
 ## Open GitHub and manually place filters
 option = webdriver.ChromeOptions()
 option.add_argument("--incognito")
-browser = webdriver.Chrome(executable_path='C:/Web Scraping/chromedriver.exe', chrome_options=option)
+# browser = webdriver.Chrome(executable_path='C:/Web Scraping/chromedriver.exe', chrome_options=option)
+browser = webdriver.Chrome(ChromeDriverManager().install())
 url = "https://github.com/0b01"
 
 # Go to desired website
