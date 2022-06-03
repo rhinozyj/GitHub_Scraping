@@ -164,20 +164,15 @@ browser.find_element(By.XPATH, "//a[@data-tab-item='repositories']").click()
 # repo info
 # The problem here is that I cannot include null value in the result list, there should be something wrong 
 # in first the X.PATH of repo_elements and the for loop below.
-repo_elements = browser.find_elements(By.XPATH, "//div[@class='col-10 col-lg-9 d-inline-block']")
+
 titles = []
 languages = []
 links = []
 descs = []
 stars = []
 
-//li[contains(@class,"col-12")]
-//li[contains(@class,"col-12")][1]//a[contains(@href,'stargazers')]
 
-for i in repo_elements:
-    print (i.attribute("class"))
-    
-    
+
 # Get repo titles
     # titles_list = i.find_elements(By.XPATH, "//a[@itemprop='name codeRepository']")
     # for x in titles_list:
@@ -214,16 +209,24 @@ for i in repo_elements:
 #             descs_element = ''
 #         descs.append(descs_element)
 
+
+for j in range(1, 31):
+    path = (
+        '//li[contains(@class,"col-12")]['
+        + str(j)
+        + "]"
+        )  
+
 # Get repo stars
-    # stars_list = i.find_elements(By.XPATH, "//a[contains(@href,'stargazers')]")
-    # for x in stars_list:
-    #     try:
-    #         stars_element = x.text
-    #         print(stars_element)
-    #     except:
-    #         stars_element = ''
-    #     stars.append(stars_element)
-    
+    try:
+        stars_list = browser.find_elements(By.XPATH, path+"//a[contains(@href,'stargazers')]")
+        print(stars_list)
+        for x in stars_list:
+            stars_element = x.text
+    except:
+        stars_element = ''
+    stars.append(stars_element)
+
 # print response in terminal
 # print('TITLES:')
 # print(titles, '\n')
@@ -233,5 +236,5 @@ for i in repo_elements:
 # print(links, '\n')
 # print("DESCRIPTIONS:")
 # print(descs, '\n')
-# print("STARS:")
-# print(stars, '\n')
+print("STARS:")
+print(stars, '\n')
