@@ -28,14 +28,13 @@ def unwind(data):
 
 ## Open GitHub and manually place filters
 option = webdriver.ChromeOptions()
-option.add_argument("--incognito")
+
 # browser = webdriver.Chrome(executable_path='C:/Web Scraping/chromedriver.exe', chrome_options=option)
 browser = webdriver.Chrome(ChromeDriverManager().install())
 url = "https://github.com"
 
 # Go to desired website
 browser.get(url)
-
 
 
 #%%
@@ -126,14 +125,33 @@ for recruiterlink in hreflist:
     browser.get(recruiterlink)
     # load the page
     try:
-        explicit_wait = WebDriverWait(browser, 5).until(
+        explicit_wait = WebDriverWait(browser, 20).until(
             EC.presence_of_element_located(
                 (By.XPATH, "//img[@class='avatar avatar-user width-full border color-bg-default']")
             )
         )
     except:
         pass 
-
+    
+    browser.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
+    time.sleep(0.5)
+    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(0.5)
+    
+    # Get name
+    try:
+        name_element = browser.find_elements(By.XPATH, "//h1[@class='vcard-names ']//span[@itemprop='name']")
+        name = [x.text for x in name_element]
+    except:
+        name.append('')
+    
+    # Get username
+    try:
+        username_element = browser.find_elements(By.XPATH, "//h1[@class='vcard-names ']//span[@itemprop='additionalName']")
+        username = [x.text for x in username_element]
+    except:
+        username.append('')
+        
     # Get self-introduction
     try:
         intro_element = browser.find_elements(By.XPATH, "//div[@class='p-note user-profile-bio mb-3 js-user-profile-bio f4']")
@@ -157,87 +175,92 @@ for recruiterlink in hreflist:
         
     # Get other profiles
     try:
-        profile_element = browser.find_elements(By.XPATH, "//a[@class='Link--primary']")
+        profile_element = browser.find_elements(By.XPATH, "//li//a[@class='Link--primary']")
         profiles = [x.text for x in profile_element]
     except:
         profiles.append('')
-        
+    
+    # repo info
+
+    # Click repo
+    browser.find_element(By.XPATH, "//a[@data-tab-item='repositories']").click()
+    titles = []
+    languages = []
+    links = []
+    descs = []
+    stars = []
+    browser.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
+    time.sleep(0.5)
+    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+    time.sleep(0.5)
+    for j in range(1, 31):
+        path = (
+            '//li[contains(@class,"col-12")]['
+            + str(j)
+            + "]"
+            )  
+
+    # Get repo titles
+        try:
+            titles_element = browser.find_elements(By.XPATH, path+"//a[@itemprop='name codeRepository']")[0].text
+        except:
+            titles_element = ''
+        titles.append(titles_element)
+
+    # Get repo languages
+        try:
+            languages_element = browser.find_elements(By.XPATH, path+"//span[@itemprop='programmingLanguage']")[0].text
+        except:
+            languages_element = ''
+        languages.append(languages_element)
+
+    # Get repo links
+        try:
+            links_element = browser.find_elements(By.XPATH, path+"//h3[@class='wb-break-all']/a")[0].get_attribute("href")
+        except:
+            links_element = ''
+        links.append(links_element)
+
+    # Get repo descriptions
+        try:
+            descs_element = browser.find_elements(By.XPATH, path+"//p[@itemprop='description']")[0].text
+        except:
+            descs_element = ''
+        descs.append(descs_element)
+
+    # Get repo stars
+        try:
+            stars_element = browser.find_elements(By.XPATH, path+"//a[contains(@href,'stargazers')]")[0].text
+        except:
+            stars_element = ''
+        stars.append(stars_element)
+
     # print response in terminal
-    print("PROFILES:")
-    print(profiles, '\n')    
-    print("LOCATION:")
-    print(location, '\n')     
+    print("NAME:")
+    print(name, '\n')
+    print("USERNAME:")
+    print(username, '\n')
     print("SELF-INTRODUCTION:")
     print(intro, '\n')
     print("COMPANY:")
-    print(company, '\n')
+    print(company, '\n')    
+    print("PROFILES:")
+    print(profiles, '\n')    
+    print("LOCATION:")
+    print(location, '\n') 
+    print('TITLES:')
+    print(titles, '\n')      
+    print("LANGUAGES:")
+    print(languages, '\n')
+    print("LINKS:")
+    print(links, '\n')
+    print("DESCRIPTIONS:")
+    print(descs, '\n')
+    print("STARS:")
+    print(stars, '\n')
     
     cnt += 1
     if cnt % 50 == 0:
         time.sleep(random.random() * 10)
 
 
-#%%
-# repo info
-
-# Click repo
-browser.find_element(By.XPATH, "//a[@data-tab-item='repositories']").click()
-titles = []
-languages = []
-links = []
-descs = []
-stars = []
-
-for j in range(1, 31):
-    path = (
-        '//li[contains(@class,"col-12")]['
-        + str(j)
-        + "]"
-        )  
-
-# Get repo titles
-    try:
-        titles_element = browser.find_elements(By.XPATH, path+"//a[@itemprop='name codeRepository']")[0].text
-    except:
-        titles_element = ''
-    titles.append(titles_element)
-
-# Get repo languages
-    try:
-        languages_element = browser.find_elements(By.XPATH, path+"//span[@itemprop='programmingLanguage']")[0].text
-    except:
-        languages_element = ''
-    languages.append(languages_element)
-
-# Get repo links
-    try:
-        links_element = browser.find_elements(By.XPATH, path+"//h3[@class='wb-break-all']/a")[0].get_attribute("href")
-    except:
-        links_element = ''
-    links.append(links_element)
-
-# Get repo descriptions
-    try:
-        descs_element = browser.find_elements(By.XPATH, path+"//p[@itemprop='description']")[0].text
-    except:
-        descs_element = ''
-    descs.append(descs_element)
-
-# Get repo stars
-    try:
-        stars_element = browser.find_elements(By.XPATH, path+"//a[contains(@href,'stargazers')]")[0].text
-    except:
-        stars_element = ''
-    stars.append(stars_element)
-
-# print response in terminal
-print('TITLES:')
-print(titles, '\n')
-print("LANGUAGES:")
-print(languages, '\n')
-print("LINKS:")
-print(links, '\n')
-print("DESCRIPTIONS:")
-print(descs, '\n')
-print("STARS:")
-print(stars, '\n')
