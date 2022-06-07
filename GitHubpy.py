@@ -37,6 +37,8 @@ url = "https://github.com"
 browser.get(url)
 
 ### You'd better log in using your own count and generate new token in account setting!
+### I use VMWARE for testing here because it has fewer people.
+### Process: Search - User - Choose the company account - People
 
 
 #%%
