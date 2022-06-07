@@ -36,6 +36,8 @@ url = "https://github.com"
 # Go to desired website
 browser.get(url)
 
+### You'd better log in using your own count and generate new token in account setting!
+
 
 #%%
 ### Switch to the browser window
