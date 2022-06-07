@@ -143,7 +143,9 @@ for recruiterlink in hreflist:
     time.sleep(0.5)
     
     ### bg info 
-    # Get name
+    # Get name    
+    ## I don't know why but sometimes names and usernames can be shown in the results, 
+    ## while they cannot been shown in the results in other occasions.    
     try:
         name_element = browser.find_elements(By.XPATH, "//span[@itemprop='name']")
         name = [x.text for x in name_element]
