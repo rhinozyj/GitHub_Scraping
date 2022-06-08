@@ -9,6 +9,7 @@ import io
 import requests
 import time
 import random
+import pickle
 from datetime import datetime
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium import webdriver
@@ -19,6 +20,15 @@ from selenium.common.exceptions import TimeoutException
 
 #%%
 
+## Define Save and Read function for Pickle
+def save_obj(obj, saveFileName):
+    with open(saveFileName + ".pkl", "wb") as f:
+        pickle.dump(obj, f, pickle.HIGHEST_PROTOCOL)
+
+
+def load_obj(saveFileName):
+    with open(saveFileName + ".pkl", "rb") as f:
+        return pickle.load(f)
 ## Define unwind function
 def unwind(data):
     linklist = []
@@ -29,8 +39,8 @@ def unwind(data):
 ## Open GitHub and manually place filters
 option = webdriver.ChromeOptions()
 
-# browser = webdriver.Chrome(executable_path='C:/Web Scraping/chromedriver.exe', chrome_options=option)
-browser = webdriver.Chrome(ChromeDriverManager().install())
+browser = webdriver.Chrome(executable_path='C:/Web Scraping/chromedriver.exe', chrome_options=option)
+# browser = webdriver.Chrome(ChromeDriverManager().install())
 url = "https://github.com"
 
 # Go to desired website
@@ -124,18 +134,19 @@ recruite_profile_links = []
 
 cnt = 0
 
-for recruiterlink in hreflist:
+for recruiterlink in hreflist[:5]:
+    name = []
+    username = []
     print(cnt)
     browser.get(recruiterlink)
     # load the page
-    try:
-        explicit_wait = WebDriverWait(browser, 20).until(
-            EC.presence_of_element_located(
-                (By.XPATH, "//img[@class='avatar avatar-user width-full border color-bg-default']")
-            )
+    
+    explicit_wait = WebDriverWait(browser, 20).until(
+        EC.presence_of_element_located(
+            (By.XPATH, "//img[@class='avatar avatar-user width-full border color-bg-default']")
         )
-    except:
-        pass 
+    )
+    
     
     browser.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
     time.sleep(0.5)
@@ -143,11 +154,18 @@ for recruiterlink in hreflist:
     time.sleep(0.5)
     
     ### bg info 
-    # Get name    
-    ## I don't know why but sometimes names and usernames can be shown in the results, 
-    ## while they cannot been shown in the results in other occasions.    
+    name = []
+    username = []
+    intro = []
+    company = []
+    location = []
+    profiles = []
+    years = []
+    
+    # Get name       
+    time.sleep(10)    
     try:
-        name_element = browser.find_elements(By.XPATH, "//span[@itemprop='name']")
+        name_element = browser.find_elements(By.XPATH, "//h1//span[1]")
         name = [x.text for x in name_element]
     except:
         name.append('')
@@ -186,26 +204,19 @@ for recruiterlink in hreflist:
         profiles = [x.text for x in profile_element]
     except:
         profiles.append('')
-        
-    # print response in terminal
-    print("NAME:")
-    print(name, '\n')
-    print("USERNAME:")
-    print(username, '\n')
-    print("SELF-INTRODUCTION:")
-    print(intro, '\n')
-    print("COMPANY:")
-    print(company, '\n')    
-    print("PROFILES:")
-    print(profiles, '\n')    
-    print("LOCATION:")
-    print(location, '\n') 
+    
+    # Get years
+    year_element = browser.find_elements(By.XPATH, "//ul[@class='filter-list small']/li")
+    years = [len(year_element)]
     
     # click repo
     browser.find_element(By.XPATH, "//a[@data-tab-item='repositories']").click()
     # count pages
-    repo_number = browser.find_elements(By.XPATH, "//a//span[@class='Counter']")[0].text
-    repo_pages = round(int(repo_number) / 30) + 1
+    try:
+        repo_number = browser.find_elements(By.XPATH, "//a//span[@class='Counter']")[0].text
+        repo_pages = round(int(repo_number) / 30) + 1
+    except:
+        repo_pages = 0
     
     ### repo info 
     ### I don't know why it doesn't click next page in repo, but the original test codes works fine.
@@ -217,18 +228,16 @@ for recruiterlink in hreflist:
     descs = []
     stars = []
     try:
-
         for i in range(repo_pages):
             browser.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
-            time.sleep(0.5)
+            time.sleep(2)
             browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(0.5)
+            time.sleep(2)
             for j in range(1, 31):
                 path = (
                     '//li[contains(@class,"col-12")]['
                     + str(j)
-                    + "]")
-                
+                    + "]")   
             # Get repo titles
                 try:
                     titles_element = browser.find_elements(By.XPATH, path+"//a[@itemprop='name codeRepository']")[0].text
@@ -268,12 +277,25 @@ for recruiterlink in hreflist:
                 browser.find_element(By.XPATH, "//div[@class='BtnGroup']//a[2]").click()
             except:
                 browser.find_element(By.XPATH, "//div[@class='BtnGroup']//a[1]").click()
-    
     except:
         print("passed!")
         pass
 
     # print response in terminal
+    print("NAME:")
+    print(name, '\n')
+    print("USERNAME:")
+    print(username, '\n')
+    print("SELF-INTRODUCTION:")
+    print(intro, '\n')
+    print("COMPANY:")
+    print(company, '\n')    
+    print("PROFILES:")
+    print(profiles, '\n')    
+    print("LOCATION:")
+    print(location, '\n') 
+    print("YEARS:")
+    print(years, '\n') 
     print('TITLES:')
     print(titles, '\n')      
     print("LANGUAGES:")
@@ -285,12 +307,31 @@ for recruiterlink in hreflist:
     print("STARS:")
     print(stars, '\n')
     
+    # save as pickle
+    pair = [
+        name,
+        username,
+        intro,
+        company,
+        profiles,
+        location,
+        years,
+        titles,
+        languages,
+        links,
+        descs,
+        stars
+    ]
+    
     # count + 1
     cnt += 1
     if cnt % 50 == 0:
         time.sleep(random.random() * 10)
+        recruite_profile_links.append(pair)
 
+pickle_byte_obj = pickle.dumps(recruite_profile_links)
 
+#%%
 ### Test codes below run fine!
 
 # option = webdriver.ChromeOptions()
