@@ -133,7 +133,7 @@ recruite_profile_links = []
 
 cnt = 0
 
-for recruiterlink in hreflist[8:10]:
+for recruiterlink in hreflist:
     print(cnt)
     browser.get(recruiterlink)
     # load the page
@@ -152,6 +152,7 @@ for recruiterlink in hreflist[8:10]:
     time.sleep(0.5)
     
     ### bg info 
+    git_link = []
     name = []
     username = []
     intro = []
@@ -160,17 +161,20 @@ for recruiterlink in hreflist[8:10]:
     profiles = []
     years = []
     
+    # Get link
+    git_link.append(recruiterlink)
+    
     # Get name       
     time.sleep(20)    
     try:
-        name_element = browser.find_elements(By.XPATH, "//span[@itemprop='name']").first
+        name_element = browser.find_elements(By.XPATH, "//span[@itemprop='name']")
         name = [x.text for x in name_element]
     except:
         name.append('')
     
     # Get username
     try:
-        username_element = browser.find_elements(By.XPATH,"//span[@itemprop='additionalName']").first
+        username_element = browser.find_elements(By.XPATH,"//span[@itemprop='additionalName']")
         username = [x.text for x in username_element]
     except:
         username.append('')
@@ -266,7 +270,7 @@ for recruiterlink in hreflist[8:10]:
     
             # Get repo stars
                 try:
-                    stars_element = browser.find_elements(By.XPATH, path+"//a[contains(@href,'stargazers')]")[0].text
+                    stars_element = int(browser.find_elements(By.XPATH, path+"//a[contains(@href,'stargazers')]")[0].text)
                 except:
                     stars_element = ''
                 stars.append(stars_element)
@@ -284,6 +288,8 @@ for recruiterlink in hreflist[8:10]:
         pass
 
     # print response in terminal
+    print("GITHUB LINK:")
+    print(git_link, '\n')
     print("NAME:")
     print(name, '\n')
     print("USERNAME:")
@@ -311,6 +317,7 @@ for recruiterlink in hreflist[8:10]:
     
     # save as pickle
     pair = [
+        git_link,
         name,
         username,
         intro,
@@ -329,99 +336,7 @@ for recruiterlink in hreflist[8:10]:
     cnt += 1
     if cnt % 50 == 0:
         time.sleep(random.random() * 10)
-        recruite_profile_links.append(pair)
+    recruite_profile_links.append(pair)
 
-pickle_byte_obj = pickle.dumps(recruite_profile_links)
 
-#%%
-### Test codes below run fine!
-
-# option = webdriver.ChromeOptions()
-
-# browser = webdriver.Chrome(ChromeDriverManager().install())
-# url = "https://github.com/asifdxtreme?tab=repositories"
-
-# # Go to desired website
-# browser.get(url)
-
-# # count pages
-# repo_number = browser.find_elements(By.XPATH, "//a//span[@class='Counter']")[0].text
-# repo_pages = round(int(repo_number) / 30) + 1
-
-# # repo
-# titles = []
-# languages = []
-# links = []
-# descs = []
-# stars = []
-# try:
-#     for i in range(repo_pages):
-#         browser.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
-#         time.sleep(0.5)
-#         browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-#         time.sleep(0.5)
-#         for j in range(1, 31):
-#             path = (
-#                 '//li[contains(@class,"col-12")]['
-#                 + str(j)
-#                 + "]")
-            
-#         # Get repo titles
-#             try:
-#                 titles_element = browser.find_elements(By.XPATH, path+"//a[@itemprop='name codeRepository']")[0].text
-#             except:    
-#                 titles_element = ''
-#             titles.append(titles_element)
-            
-#         # Get repo languages
-#             try:
-#                 languages_element = browser.find_elements(By.XPATH, path+"//span[@itemprop='programmingLanguage']")[0].text
-#             except:
-#                 languages_element = ''
-#             languages.append(languages_element)
-#         # Get repo links
-#             try:
-#                 links_element = browser.find_elements(By.XPATH, path+"//h3[@class='wb-break-all']/a")[0].get_attribute("href")
-#             except:
-#                 links_element = ''
-#             links.append(links_element)
-
-#         # Get repo descriptions
-#             try:
-#                 descs_element = browser.find_elements(By.XPATH, path+"//p[@itemprop='description']")[0].text
-#             except:
-#                 descs_element = ''
-#             descs.append(descs_element)
-
-#         # Get repo stars
-#             try:
-#                 stars_element = browser.find_elements(By.XPATH, path+"//a[contains(@href,'stargazers')]")[0].text
-#             except:
-#                 stars_element = ''
-#             stars.append(stars_element)
-
-#         try: 
-#             browser.find_element(By.XPATH, "//div[@class='BtnGroup']//a[2]").click()
-#         except:
-#             browser.find_element(By.XPATH, "//div[@class='BtnGroup']//a[1]").click()
-#         # try:
-#         #     button_text = browser.find_element(By.XPATH, "//div[@class='BtnGroup']//button").text
-#         #     print(button_text)
-#         # except:
-#         #     print('Can\'t find')
-
-# except:
-#     print("passed!")
-#     pass
-
-# print('TITLES:')
-# print(titles, '\n') 
-# print("LANGUAGES:")
-# print(languages, '\n')
-# print("LINKS:")
-# print(links, '\n')
-# print("DESCRIPTIONS:")
-# print(descs, '\n')
-# print("STARS:")
-# print(stars, '\n')
-    
+save_obj(recruite_profile_links, "yelp58")
