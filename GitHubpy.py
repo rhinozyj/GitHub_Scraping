@@ -39,8 +39,8 @@ def unwind(data):
 ## Open GitHub and manually place filters
 option = webdriver.ChromeOptions()
 
-browser = webdriver.Chrome(executable_path='C:/Web Scraping/chromedriver.exe', chrome_options=option)
-# browser = webdriver.Chrome(ChromeDriverManager().install())
+# browser = webdriver.Chrome(executable_path='C:/Web Scraping/chromedriver.exe', chrome_options=option)
+browser = webdriver.Chrome(ChromeDriverManager().install())
 url = "https://github.com"
 
 # Go to desired website
@@ -145,11 +145,7 @@ for recruiterlink in hreflist:
         )
     except:
         pass
-    
-    browser.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
-    time.sleep(0.5)
-    browser.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-    time.sleep(0.5)
+
     
     ### bg info 
     git_link = []
@@ -165,7 +161,7 @@ for recruiterlink in hreflist:
     git_link.append(recruiterlink)
     
     # Get name       
-    time.sleep(20)    
+    time.sleep(10)    
     try:
         name_element = browser.find_elements(By.XPATH, "//span[@itemprop='name']")
         name = [x.text for x in name_element]
