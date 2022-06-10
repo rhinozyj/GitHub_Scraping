@@ -128,25 +128,23 @@ hreflist = unwind(cphref)
 
 #%%
 
-
 print(len(hreflist))
 recruite_profile_links = []
 
 cnt = 0
 
-for recruiterlink in hreflist[:5]:
-    name = []
-    username = []
+for recruiterlink in hreflist[8:10]:
     print(cnt)
     browser.get(recruiterlink)
     # load the page
-    
-    explicit_wait = WebDriverWait(browser, 20).until(
-        EC.presence_of_element_located(
-            (By.XPATH, "//img[@class='avatar avatar-user width-full border color-bg-default']")
+    try:
+        explicit_wait = WebDriverWait(browser, 20).until(
+            EC.presence_of_element_located(
+                (By.XPATH, "//span[@itemprop='name']")
+            )
         )
-    )
-    
+    except:
+        pass
     
     browser.execute_script("window.scrollTo(0, document.body.scrollHeight/2);")
     time.sleep(0.5)
@@ -163,16 +161,16 @@ for recruiterlink in hreflist[:5]:
     years = []
     
     # Get name       
-    time.sleep(10)    
+    time.sleep(20)    
     try:
-        name_element = browser.find_elements(By.XPATH, "//h1//span[1]")
+        name_element = browser.find_elements(By.XPATH, "//span[@itemprop='name']").first
         name = [x.text for x in name_element]
     except:
         name.append('')
     
     # Get username
     try:
-        username_element = browser.find_elements(By.XPATH, "//span[@itemprop='additionalName']")
+        username_element = browser.find_elements(By.XPATH,"//span[@itemprop='additionalName']").first
         username = [x.text for x in username_element]
     except:
         username.append('')
@@ -272,11 +270,15 @@ for recruiterlink in hreflist[:5]:
                 except:
                     stars_element = ''
                 stars.append(stars_element)
-    
+            
+            # click next page
             try: 
-                browser.find_element(By.XPATH, "//div[@class='BtnGroup']//a[2]").click()
+                if len(titles) <= 30:
+                    browser.find_element(By.XPATH, '//*[@id="user-repositories-list"]/div/div/a').click()
+                else:
+                    browser.find_element(By.XPATH, '//*[@id="user-repositories-list"]/div/div/a[2]').click()
             except:
-                browser.find_element(By.XPATH, "//div[@class='BtnGroup']//a[1]").click()
+                pass
     except:
         print("passed!")
         pass
